@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".BottomSheetFragment">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/delete_item_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_baseline_delete_outline_24"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:padding="10dp"
+            android:text="Delete"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/share_item_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="?attr/actionModeShareDrawable"
+            android:drawablePadding="16dp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:text="Share"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/delete_item_sheet" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/share_item_sheet">
+
+            <com.thebluealliance.spectrum.SpectrumPalette
+                android:id="@+id/colorPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:spectrum_autoPadding="true"
+                app:spectrum_colors="@array/color_picker"
+                app:spectrum_columnCount="17"
+                app:spectrum_outlineWidth="0.1dp" />
+        </HorizontalScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
