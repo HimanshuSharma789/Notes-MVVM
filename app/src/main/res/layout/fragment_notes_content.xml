@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/toolbar_save_note_button"
+                android:id="@+id/toolbar_note_option_button"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:clickable="true"
@@ -83,19 +83,22 @@
             tools:layout_editor_absoluteX="0dp">
 
             <LinearLayout
+                android:id="@+id/note_content_linearlayout"
+                setNoteColor="@{notesContentViewModel.note.noteColor}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:transitionName="shared_note_element_container">
 
                 <EditText
                     android:id="@+id/note_title_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@null"
                     android:hint="Title"
-                    android:layout_marginTop="28dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     android:inputType="none"
                     android:text="@={notesContentViewModel.note.noteTitle}"
                     android:textSize="22sp"
@@ -105,13 +108,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
                     android:id="@+id/note_text_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@null"
                     android:gravity="top"
                     android:hint="Note"
@@ -128,19 +131,19 @@
 
         </androidx.core.widget.NestedScrollView>
 
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/delete_note_fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:backgroundTint="#EF5350"-->
-<!--            android:clickable="true"-->
-<!--            android:contentDescription="Save note"-->
-<!--            android:focusable="true"-->
-<!--            android:src="@drawable/ic_baseline_delete_outline_24"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--            android:id="@+id/delete_note_fab"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="16dp"-->
+        <!--            android:layout_marginBottom="16dp"-->
+        <!--            android:backgroundTint="#EF5350"-->
+        <!--            android:clickable="true"-->
+        <!--            android:contentDescription="Save note"-->
+        <!--            android:focusable="true"-->
+        <!--            android:src="@drawable/ic_baseline_delete_outline_24"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

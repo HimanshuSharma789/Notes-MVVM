@@ -23,7 +23,3 @@ fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
-
-//fun View.hideKeyboard() =
-//        (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-//            .hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)

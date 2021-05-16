@@ -9,7 +9,7 @@
         android:id="@+id/notesFragment"
         android:name="com.example.notes.notesmain.NotesFragment"
         android:label="fragment_notes"
-        tools:layout="@layout/fragment_notes" >
+        tools:layout="@layout/fragment_notes">
         <action
             android:id="@+id/action_notesFragment_to_notesContentFragment"
             app:destination="@id/notesContentFragment"
@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_notes_content">
 
         <argument
-            android:name="Note"
+            android:name="note"
             app:argType="com.example.notes.db.Notes" />
         <action
             android:id="@+id/action_notesContentFragment_to_notesFragment"

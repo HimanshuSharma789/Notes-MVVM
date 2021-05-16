@@ -1,15 +1,16 @@
 package com.example.notes.notesmain
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notes.databinding.ListItemNotesBinding
 import com.example.notes.db.Notes
-import com.example.notes.setBackColor
 
-class NotesAdapter(val clickListener: NoteClickListener) : ListAdapter<Notes, NotesAdapter.NotesViewHolder>(NotesDiffCallBack()) {
+class NotesAdapter(private val clickListener: NoteClickListener) :
+    ListAdapter<Notes, NotesAdapter.NotesViewHolder>(NotesDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
         return NotesViewHolder.from(parent)
@@ -20,11 +21,12 @@ class NotesAdapter(val clickListener: NoteClickListener) : ListAdapter<Notes, No
         holder.bind(clickListener, item)
     }
 
-    class NotesViewHolder private constructor(val binding: ListItemNotesBinding) :
+    class NotesViewHolder private constructor(private val binding: ListItemNotesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(clickListener: NoteClickListener, item: Notes) {
             binding.note = item
+            binding.root.transitionName = "recycler item ${item.noteId}"
             binding.clickListener = clickListener
             binding.executePendingBindings()
         }
@@ -51,6 +53,6 @@ class NotesDiffCallBack : DiffUtil.ItemCallback<Notes>() {
     }
 }
 
-class NoteClickListener(val clickListener: (note: Notes) -> Unit) {
-    fun onClick(note: Notes) = clickListener(note)
+class NoteClickListener(val clickListener: (view: View, note: Notes) -> Unit) {
+    fun onClick(view: View, note: Notes) = clickListener(view, note)
 }

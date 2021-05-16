@@ -1,7 +1,9 @@
 package com.example.notes.notescontent
 
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.db.Notes
 import com.example.notes.db.NotesDao
 import kotlinx.coroutines.Dispatchers
@@ -10,18 +12,18 @@ import kotlinx.coroutines.withContext
 
 class NotesContentViewModel(
     notes: Notes,
-    private val database: NotesDao
+    private val database: NotesDao,
 ) : ViewModel() {
 
-    val note = MutableLiveData<Notes>()
-    var isNewNote : Boolean
+    private val _note = MutableLiveData<Notes>()
+    val note: LiveData<Notes>
+        get() = _note
 
-    var color: LiveData<Int> = Transformations.map(note) {
-        it.noteColor
-    }
+    private var isNewNote: Boolean
+
 
     init {
-        note.value = notes
+        _note.value = notes
         isNewNote = (notes.noteId == 0)
     }
 
@@ -48,24 +50,30 @@ class NotesContentViewModel(
     fun deleteNote() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                database.deleteNote(note.value!!)
+                database.deleteNote(_note.value!!)
             }
         }
         _navigateToNotes.value = true
     }
 
     fun saveNote() {
-        viewModelScope.launch {
-            if (isNewNote) {
-                insert(note.value!!)
-            } else {
-                update(note.value!!)
+        if (!(_note.value!!.noteTitle.trim().isEmpty() && _note.value!!.noteText.trim()
+                .isEmpty())
+        ) {
+            viewModelScope.launch {
+                if (isNewNote) {
+                    insert(_note.value!!)
+                } else {
+                    update(_note.value!!)
+                }
             }
         }
         _navigateToNotes.value = true
-
     }
 
+    fun changeNoteColor(newColor: Int) {
+        _note.value!!.noteColor = newColor
+    }
 
 
 }

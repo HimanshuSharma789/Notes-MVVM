@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="note"
             type="com.example.notes.db.Notes" />
@@ -18,13 +19,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:clickable="true"
-        app:cardElevation="8dp"
-        app:strokeColor="#2f2f2f"
-        app:strokeWidth="0.2dp"
         android:focusable="true"
-        android:onClick="@{() -> clickListener.onClick(note)}"
+        android:onClick="@{(view) -> clickListener.onClick(view, note)}"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
         app:noteColor="@{note}"
-        app:cardCornerRadius="8dp">
+        app:strokeColor="#2f2f2f"
+        app:strokeWidth="0.2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,23 +35,23 @@
             <TextView
                 android:id="@+id/note_title_textview"
                 android:layout_width="0dp"
-                android:ellipsize="end"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:maxLines="2"
-                app:noteTitle="@{note}"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:noteTitle="@{note}" />
 
             <TextView
-                android:ellipsize="end"
                 android:id="@+id/note_text_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:ellipsize="end"
                 android:maxLines="8"
                 android:text="@{note.noteText}"
                 android:textSize="14sp"

@@ -1,9 +1,7 @@
 package com.example.notes
 
-import android.util.Log
+import android.view.View
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.notes.db.Notes
 import com.google.android.material.card.MaterialCardView
@@ -19,6 +17,13 @@ fun TextView.setNoteTitle(item: Notes?) {
 fun TextView.setNoteText(item: Notes?) {
     item?.let {
         text = item.noteText
+    }
+}
+
+@BindingAdapter("setNoteColor")
+fun View.setNoteColor(color: Int?) {
+    color?.let {
+        setBackgroundColor(color)
     }
 }
 

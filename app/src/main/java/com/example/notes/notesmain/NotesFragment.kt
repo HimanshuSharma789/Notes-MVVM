@@ -1,27 +1,25 @@
 package com.example.notes.notesmain
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.notes.R
 import com.example.notes.databinding.FragmentNotesBinding
 import com.example.notes.db.Notes
 import com.example.notes.db.NotesDatabase
 import com.example.notes.hideKeyboard
+import com.google.android.material.transition.MaterialElevationScale
 
 class NotesFragment : Fragment() {
-
 
     private lateinit var binding: FragmentNotesBinding
     private lateinit var notesViewModel: NotesViewModel
@@ -29,7 +27,7 @@ class NotesFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_notes, container, false)
@@ -43,10 +41,14 @@ class NotesFragment : Fragment() {
         binding.notesViewModel = notesViewModel
         binding.lifecycleOwner = this
 
-        val manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        binding.recycleView.layoutManager = manager
-        adapter = NotesAdapter(NoteClickListener { note: Notes ->
-            notesViewModel.onNoteClicked(note)
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
+
+
+        adapter = NotesAdapter(NoteClickListener { view: View, note: Notes ->
+            hideKeyboard()
+            navigateToNotesContentFragment(view, note)
         })
         binding.recycleView.adapter = adapter
 
@@ -57,25 +59,26 @@ class NotesFragment : Fragment() {
         searchQueryChanged()
 
 
-
-        // TODO combine nav controller
         binding.fab.setOnClickListener {
-            this.findNavController()
-                .navigate(NotesFragmentDirections.actionNotesFragmentToNotesContentFragment(Notes()))
-            notesViewModel.onNoteContentNavigated()
+            navigateToNotesContentFragment(it, Notes())
         }
 
-
-        notesViewModel.navigateToNotesContent.observe(viewLifecycleOwner, {
-            it?.let {
-                hideKeyboard()
-                this.findNavController()
-                    .navigate(NotesFragmentDirections.actionNotesFragmentToNotesContentFragment(it))
-                notesViewModel.onNoteContentNavigated()
-            }
-        })
-
         return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+    }
+
+
+    private fun navigateToNotesContentFragment(it: View, note: Notes) {
+        val extras = FragmentNavigatorExtras(it to "shared_note_element_container")
+        this.findNavController()
+            .navigate(NotesFragmentDirections.actionNotesFragmentToNotesContentFragment(note),
+                extras)
     }
 
 
@@ -91,14 +94,18 @@ class NotesFragment : Fragment() {
 
 
     private fun searchQueryChanged() {
-        // notesViewModel.search.observe(viewLifecycleOwner, Observer { text->
-        binding.searchEditText.doOnTextChanged { text, start, before, count ->
+        binding.searchEditText.doOnTextChanged { text, _, _, _ ->
             if (text.isNullOrEmpty() || text.isBlank()) {
                 notesObserver()
                 binding.clearText.visibility = View.GONE
             } else {
                 binding.clearText.visibility = View.VISIBLE
                 notesViewModel.searchNotes("%$text%").observe(viewLifecycleOwner, {
+                    if (it.isEmpty()) {
+                        binding.emptyList.visibility = View.VISIBLE
+                    } else {
+                        binding.emptyList.visibility = View.GONE
+                    }
                     adapter.submitList(it)
                 })
             }
@@ -119,6 +126,11 @@ class NotesFragment : Fragment() {
 
     private fun notesObserver() {
         notesViewModel.notes.observe(viewLifecycleOwner, {
+            if (it.isEmpty()) {
+                binding.emptyList.visibility = View.VISIBLE
+            } else {
+                binding.emptyList.visibility = View.GONE
+            }
             adapter.submitList(it)
         })
     }
