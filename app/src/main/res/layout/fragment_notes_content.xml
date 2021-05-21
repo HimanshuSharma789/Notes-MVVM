@@ -79,8 +79,7 @@
             android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_notes_content"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="0dp">
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
                 android:id="@+id/note_content_linearlayout"
@@ -99,8 +98,11 @@
                     android:layout_marginEnd="16dp"
                     android:background="@null"
                     android:hint="Title"
+                    android:importantForAutofill="no"
                     android:inputType="none"
                     android:text="@={notesContentViewModel.note.noteTitle}"
+                    android:textColor="@color/black"
+                    android:textColorHint="#808080"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -118,8 +120,11 @@
                     android:background="@null"
                     android:gravity="top"
                     android:hint="Note"
+                    android:importantForAutofill="no"
                     android:inputType="textCapSentences|textMultiLine"
                     android:text="@={notesContentViewModel.note.noteText}"
+                    android:textColor="#505050"
+                    android:textColorHint="#808080"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -130,21 +135,6 @@
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
-
-        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--            android:id="@+id/delete_note_fab"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginEnd="16dp"-->
-        <!--            android:layout_marginBottom="16dp"-->
-        <!--            android:backgroundTint="#EF5350"-->
-        <!--            android:clickable="true"-->
-        <!--            android:contentDescription="Save note"-->
-        <!--            android:focusable="true"-->
-        <!--            android:src="@drawable/ic_baseline_delete_outline_24"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent" />-->
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

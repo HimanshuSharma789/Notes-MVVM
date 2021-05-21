@@ -1,10 +1,12 @@
 package com.example.notes.notesmain
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.doOnPreDraw
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
@@ -12,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.notes.R
 import com.example.notes.databinding.FragmentNotesBinding
 import com.example.notes.db.Notes
@@ -53,10 +56,18 @@ class NotesFragment : Fragment() {
         binding.recycleView.adapter = adapter
 
 
+        changeAppTheme()
         notesObserver()
         onSearchActionListener()
         clearTextPressed()
         searchQueryChanged()
+
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                binding.recycleView.smoothScrollToPosition(0)
+            }
+        })
 
 
         binding.fab.setOnClickListener {
@@ -133,6 +144,32 @@ class NotesFragment : Fragment() {
             }
             adapter.submitList(it)
         })
+    }
+
+    private fun changeAppTheme() {
+        binding.darkThemeImageView.setOnClickListener {
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_dark_mode_24)
+
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_light_mode_24)
+                }
+            }
+        }
+
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_light_mode_24)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_dark_mode_24)
+            }
+        }
+
     }
 
 }

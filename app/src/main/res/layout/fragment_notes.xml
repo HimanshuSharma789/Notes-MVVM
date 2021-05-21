@@ -17,9 +17,9 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
+            style="@style/AppThemeActionBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,11 +40,20 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="Notes"
-                        android:textColor="@color/black"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/dark_theme_image_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:padding="4dp"
+                        tools:src="@drawable/ic_baseline_dark_mode_24"
+                        app:layout_constraintBottom_toBottomOf="@id/app_bar_text"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <View
                         android:layout_width="0dp"
@@ -103,8 +112,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
             tools:context=".notesmain.NotesFragment">
@@ -113,6 +120,8 @@
                 android:id="@+id/recycle_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:transitionGroup="true"
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -152,10 +161,10 @@
                 android:contentDescription="@string/new_note"
                 android:src="@android:drawable/ic_input_add"
                 android:transitionName="shared_fab_container"
-                app:backgroundTint="@color/black"
+                app:backgroundTint="?android:attr/colorForeground"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/recycle_view"
-                app:tint="@color/white" />
+                app:tint="?android:attr/colorForegroundInverse" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

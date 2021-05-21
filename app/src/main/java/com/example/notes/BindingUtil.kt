@@ -9,14 +9,20 @@ import com.google.android.material.card.MaterialCardView
 @BindingAdapter("noteTitle")
 fun TextView.setNoteTitle(item: Notes?) {
     item?.let {
-        text = item.noteTitle
+        when (it.noteTitle.isEmpty()) {
+            true -> visibility = View.GONE
+            false -> text = item.noteTitle
+        }
     }
 }
 
 @BindingAdapter("noteText")
 fun TextView.setNoteText(item: Notes?) {
     item?.let {
-        text = item.noteText
+        when (it.noteText.isEmpty()) {
+            true -> visibility = View.GONE
+            else -> text = item.noteText
+        }
     }
 }
 
