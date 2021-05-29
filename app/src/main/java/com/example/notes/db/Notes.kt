@@ -10,4 +10,5 @@ data class Notes(
     var noteTitle: String = "",
     var noteText: String = "",
     var noteColor: Int = -1,
+    var isNotePin: Boolean = false,
 ) : Serializable

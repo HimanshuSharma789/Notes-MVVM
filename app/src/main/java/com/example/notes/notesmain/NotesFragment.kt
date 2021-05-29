@@ -1,10 +1,9 @@
 package com.example.notes.notesmain
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.doOnPreDraw
@@ -20,9 +19,10 @@ import com.example.notes.databinding.FragmentNotesBinding
 import com.example.notes.db.Notes
 import com.example.notes.db.NotesDatabase
 import com.example.notes.hideKeyboard
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
 
-class NotesFragment : Fragment() {
+class NotesFragment : Fragment(), NotesAdapter.NoteClickListener {
 
     private lateinit var binding: FragmentNotesBinding
     private lateinit var notesViewModel: NotesViewModel
@@ -49,11 +49,9 @@ class NotesFragment : Fragment() {
         reenterTransition = MaterialElevationScale(true)
 
 
-        adapter = NotesAdapter(NoteClickListener { view: View, note: Notes ->
-            hideKeyboard()
-            navigateToNotesContentFragment(view, note)
-        })
+        adapter = NotesAdapter(this)
         binding.recycleView.adapter = adapter
+        registerForContextMenu(binding.recycleView)
 
 
         changeAppTheme()
@@ -62,11 +60,20 @@ class NotesFragment : Fragment() {
         clearTextPressed()
         searchQueryChanged()
 
+
+
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                binding.recycleView.smoothScrollToPosition(0)
+                super.onItemRangeChanged(positionStart, itemCount)
+                binding.recycleView.layoutManager?.scrollToPosition(0)
             }
+
+
+            /*override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                Toast.makeText(context, "$fromPosition to $toPosition", Toast.LENGTH_SHORT).show())
+                binding.recycleView.layoutManager?.scrollToPosition(toPosition)
+            }*/
         })
 
 
@@ -147,16 +154,27 @@ class NotesFragment : Fragment() {
     }
 
     private fun changeAppTheme() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        when (sharedPref.getBoolean("night_mode", false)) {
+            false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+
         binding.darkThemeImageView.setOnClickListener {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_YES -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_dark_mode_24)
-
+                    with(sharedPref.edit()) {
+                        putBoolean("night_mode", false)
+                        apply()
+                    }
                 }
                 Configuration.UI_MODE_NIGHT_NO -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    binding.darkThemeImageView.setImageResource(R.drawable.ic_baseline_light_mode_24)
+                    with(sharedPref.edit()) {
+                        putBoolean("night_mode", true)
+                        apply()
+                    }
                 }
             }
         }
@@ -170,6 +188,54 @@ class NotesFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onNoteClicked(view: View, note: Notes) {
+        hideKeyboard()
+        navigateToNotesContentFragment(view, note)
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?,
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = requireActivity().menuInflater
+        inflater.inflate(R.menu.note_context_menu, menu)
+        menu.findItem(R.id.pin_menu_item).title = when (adapter.getItem()!!.isNotePin) {
+            true -> "Unpin"
+            false -> "Pin to Top"
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val note = adapter.getItem() ?: return super.onContextItemSelected(item)
+        return when (item.itemId) {
+            R.id.pin_menu_item -> {
+                // Pin to Top
+                note.isNotePin = note.isNotePin.not()
+                notesViewModel.updateNote(note)
+                adapter.notifyNoteChanged()
+                true
+            }
+            R.id.delete_menu_item -> {
+                // Delete
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Delete Note ?")
+                    .setMessage("Deleted note cannot be recovered")
+                    .setPositiveButton("Delete") { dialog, _ ->
+                        dialog.dismiss()
+                        notesViewModel.deleteNote(note)
+                    }
+                    .setNeutralButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
     }
 
 }

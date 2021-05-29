@@ -10,7 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.notes.notesmain.NoteClickListener" />
+            type="com.example.notes.notesmain.NotesAdapter.NoteClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -20,12 +20,24 @@
         android:layout_margin="6dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{(view) -> clickListener.onClick(view, note)}"
+        android:longClickable="true"
+        android:onClick="@{(view) -> clickListener.onNoteClicked(view, note)}"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
         app:noteColor="@{note}"
         app:strokeColor="#2f2f2f"
         app:strokeWidth="0.2dp">
+
+        <ImageView
+            android:id="@+id/pin_image_view"
+            isNotePin="@{note}"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end"
+            android:layout_margin="2dp"
+            android:contentDescription="Pin Note Image"
+            android:rotation="-45"
+            android:src="@drawable/ic_baseline_push_pin_24" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
