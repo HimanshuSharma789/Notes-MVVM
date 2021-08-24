@@ -75,11 +75,11 @@ class NotesContentFragment : Fragment() {
             }
 
             sheetBinding.shareItemSheet.setOnClickListener {
+                val message = (viewModel.note.value!!.noteTitle + "\n" + viewModel.note.value!!.noteText)
                 val shareIntent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT,
-                        viewModel.note.value!!.noteTitle + "\n" + viewModel.note.value!!.noteText)
-                    type = "plain/text"
+                    putExtra(Intent.EXTRA_TEXT, message)
+                    type = "text/plain"
                 }
                 startActivity(Intent.createChooser(shareIntent, null))
                 sheetDialog.dismiss()
